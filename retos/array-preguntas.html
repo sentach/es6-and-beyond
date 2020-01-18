@@ -27,13 +27,24 @@
 
     // Array.prototype.filter()
     // 1. Filtra la lista de científicas por aquellas que tienen un premio Nobel
-    // Array.prototype.map()
+    var nobelScientists = scientists.filter(x => x.nobel);
+    console.log(nobelScientists);
+    // Array.prototype.map()  
     // 2. Crea un array de científicas con su nombre y apellido únicamente.
+    var nombreApellido = scientists.map(x =>{ return {nombre:x.first, apellido:x.last} });
+    console.log(nombreApellido);
     // Array.prototype.sort()
     // 3. Ordena las científicas por año de nacimiento. De más mayor a más joven.
+    var ordenadas = scientists.sort((a,b)=>a.born - b.born);
+    console.log(ordenadas);
     // Array.prototype.reduce()
     // 4. Cuántos años vivieron entre todas.
+    console.log(scientists.map(x => (x.passed == null ? 2020 : x.passed) - x.born));
+    var años = scientists.reduce((x, c) => x + ((c.passed == null ? 2020 : c.passed)-c.born) , 0 );
+    console.log(años);
     // 5. Ordena las científicas por las que vivieron más años. (No incluir las que siguen vivas).
+    var longevas = scientists.filter(x => x.passed !=null).sort((x,y) => (x.passed - x.born)-(y.passed-y.born)).map(x => {return {nombre:x.first, apellido:x.last, edad:x.passed-x.born }});
+    console.log(longevas);
   </script>
 </body>
 </html>
