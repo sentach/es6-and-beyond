@@ -3,20 +3,44 @@ var title = document.getElementById('mainTitle');
 title.textContent = 'Datos del Polen de Madrid Starter';
 var contenedor = document.querySelector('.container');
 
-function getDatos(url) {
-  var xmlHttp = new XMLHttpRequest();
+const getDatos = url =>{
+  fetch(url).then(response => response.json()).then(datos => processResponse2(datos)).catch(x => console.log(x));
+}
 
-  xmlHttp.onreadystatechange = function() {
-    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-      var datos = JSON.parse(xmlHttp.responseText);
-      processResponse(datos);
-    } else if (xmlHttp.readyState === 4 && xmlHttp.status === 404) {
-      console.error('ERROR! 404');
-      console.info(JSON.parse(xmlHttp.responseText));
-    }
-  };
-  xmlHttp.open('GET', url, true);
-  xmlHttp.send();
+function processResponse2(datos){
+  var template = '';
+  var result = datos.map(dato =>{
+    template += `<h3 class="subTitle">${dato.name}</h3><div class="values">`;
+    parametros = Object.keys(dato.parametros);
+    //mediciones = Object.keys(dato.mediciones);
+    parametros.forEach(element => {
+      var medio = dato.parametros[element].medio;
+      var alto = dato.parametros[element].alto;
+      var muy_alto = dato.parametros[element].muy_alto;
+      var valor = dato.mediciones[element].valor;
+      var stilo = "color:green;";
+      if(valor > medio) {stilo = "color:orange;"}
+      if(valor>alto){stilo="color:brown;"}
+      template +=
+        `<div class="card"><h4>${element}` +
+        `</h4><p>Nivel medio: ${medio}` +
+        '</p><p>Nivel alto: ' +
+        alto +
+        '</p><p>Nivel muy alto: ' +
+        muy_alto +
+        '</p><p>Fecha: ' +
+        new Date(dato.mediciones[element].fecha.slice(0, -1)).toDateString() +
+        '</p><p>Valor: <span style="'+ stilo +'">' +
+        valor +
+        '</span></p><p>Resumen: ' +
+        dato.mediciones[element].resumen +
+        '</p></div>';
+    });
+  } 
+  //`<h3 class="subTitle">${dato.name}</h3>`
+  );
+  
+  contenedor.innerHTML = template;
 }
 
 function processResponse(datos) {
